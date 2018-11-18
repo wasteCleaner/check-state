@@ -1,0 +1,39 @@
+{
+  "name": "check-state",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "preferGlobal": true,
+  "bin": "./index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wasteCleaner/check-state.git"
+  },
+  "author": "wastecleaner",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wasteCleaner/check-state/issues"
+  },
+  "homepage": "https://github.com/wasteCleaner/check-state#readme",
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "commander": "^2.19.0",
+    "core-js": "^2.5.7",
+    "glob": "^7.1.3",
+    "inquirer": "^6.2.0",
+    "ora": "^3.0.0",
+    "require-all": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/chalk": "^2.2.0",
+    "@types/commander": "^2.12.2",
+    "@types/core-js": "^2.5.0",
+    "@types/glob": "^7.1.1",
+    "@types/inquirer": "0.0.43",
+    "@types/ora": "^1.3.4"
+  }
+}
