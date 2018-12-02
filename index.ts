@@ -4,8 +4,9 @@ import 'core-js';
 import chalk from 'chalk';
 import * as ora from 'ora';
 import * as commander from 'commander';
-import * as fs from 'fs';
-import * as glob from 'glob';
+import { prepareTestCases } from "./testCases";
+import { prepareSelectors } from "./selectors";
+import { runTests } from "./testing";
 
 commander
     .version('1.0.0')
@@ -15,25 +16,18 @@ commander
     .command('start')
     .alias('s')
     .description('Start testing')
-    .action(() => {
-        glob('**/*.sct.json', { ignore: 'node_modules/**/*.sct.json' }, (err, files) => {
-            files.forEach(file => {
-                console.log(chalk.yellowBright(file));
-                fs.readFile(file, 'utf8', (err, data) => {
-                    if (err) throw err;
-                    console.log(data);
-                });
-            });
-        });
+    .action(async () => {
+        const spinnerTestCases = ora('Preparing test cases \n').start();
+        const testCases = await prepareTestCases();
+        spinnerTestCases.stop();
 
+        const spinnerConfiguration = ora('Preparing configuration files \n').start();
+        const selectors = await prepareSelectors();
+        spinnerConfiguration.stop();
 
-        const spinner = ora('Loading').start();
-        setTimeout(() => {
-            spinner.color = 'yellow';
-            spinner.text = 'Done!';
-            spinner.stop();
-            console.log(chalk.green('All tests passed!!!'));
-        }, 5000);
+        if (testCases && selectors) {
+            await runTests(testCases, selectors);
+        }
     });
 
 if (!process.argv.slice(2).length) {
