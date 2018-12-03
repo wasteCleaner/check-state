@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import 'core-js';
-import chalk from 'chalk';
 import * as ora from 'ora';
 import * as commander from 'commander';
 import { prepareTestCases } from "./testCases";
