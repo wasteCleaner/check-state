@@ -2,72 +2,92 @@ import * as glob from "glob";
 import chalk from "chalk";
 import * as webpack from "webpack";
 import * as path from "path";
+import * as fs from "fs";
 
-import { SelectorsGroup } from "./types";
+import { Selectors } from "./types";
 
-export const prepareSelectors = async () => {
-    const configurationFiles = await getConfigurationFiles();
-    if (configurationFiles.length === 0) {
-        return console.log(chalk.red('Configuration files not found'));
+export const prepareSelectors = async (): Promise<Selectors | void> => {
+    try {
+        const configurationFile = await getConfigurationFiles();
+        await buildTemporarySelectors(configurationFile);
+        const compiledSelectors = await getCompiledSelectors();
+        return require(compiledSelectors);
+    } catch (e) {
+        console.log(chalk.red(`Error: ${e}`));
     }
-
-    await Promise.all(configurationFiles.map((config) => buildTemporaryActions(config)));
-
-    const compiledActions = await getCompiledConfigurations();
-    if (compiledActions.length === 0) {
-        return console.log(chalk.red('Compiled configuration files not found'));
-    }
-
-    return compiledActions.map((action) => require(action) as SelectorsGroup);
 };
 
-const getConfigurationFiles = () => {
-    return new Promise<string[]>((resolve, reject) => {
+const getConfigurationFiles = (): Promise<string> => {
+    return new Promise<string>((resolve, reject) => {
         glob(
             '**/checkState.config.js',
             { ignore: 'node_modules/**/checkState.config.js', realpath: true },
             (err, files) => {
-                if (err) reject(err);
-                resolve(files);
+                if (err) {
+                    reject(err);
+                }
+                files && files.length ? resolve(files[0]) : reject();
             });
     });
 };
 
-const buildTemporaryActions = async (configurationFile: string) => {
+const buildTemporarySelectors = (configurationFile: string): Promise<void> => {
     console.log(chalk.green(`Configuration in progress: ${configurationFile}`));
-    return await webpack({
-        context: path.resolve(__dirname),
-        entry: configurationFile,
-        output: {
-            path: configurationFile.replace('checkState.config.js', ''),
-            filename: 'tmp.checkState.config.js',
-            libraryTarget: 'umd',
-            library: 'lib',
-            umdNamedDefine: true,
-            globalObject: 'this'
-        },
-        resolve: {
-            extensions: [".ts", ".tsx", ".js"]
-        },
-        module: {
-            rules: [
-                {
-                    test: /\.tsx?$/,
-                    loader: 'ts-loader'
-                }
-            ]
-        },
+    return new Promise((resolve, reject) => {
+        webpack({
+            context: path.resolve(__dirname),
+            entry: configurationFile,
+            output: {
+                path: configurationFile.replace('checkState.config.js', ''),
+                filename: 'tmp.checkState.config.js',
+                libraryTarget: 'umd',
+                library: 'lib',
+                umdNamedDefine: true,
+                globalObject: 'this'
+            },
+            resolve: {
+                extensions: [".ts", ".tsx", ".js", ".jsx"]
+            },
+            module: {
+                rules: [
+                    {
+                        test: /\.tsx?$/,
+                        loader: 'ts-loader'
+                    },
+                ]
+            },
+        }, () => {
+            resolve();
+        });
     });
 };
 
-const getCompiledConfigurations = () => {
-    return new Promise<string[]>((resolve, reject) => {
+export const removeTemporarySelectors = async (): Promise<void> => {
+    const compiledSelectors = await getCompiledSelectors();
+    await removeFile(compiledSelectors);
+};
+
+const removeFile = (path: string) => {
+    return new Promise<void>((resolve, reject) => {
+        fs.unlink(path, (err) => {
+            if (err) {
+                reject(err);
+            }
+            resolve();
+        })
+    });
+};
+
+const getCompiledSelectors = (): Promise<string> => {
+    return new Promise<string>((resolve, reject) => {
         glob(
             '**/tmp.checkState.config.js',
             { ignore: 'node_modules/**/tmp.checkState.config.js', realpath: true },
             (err, files) => {
-                if (err) reject(err);
-                resolve(files);
+                if (err) {
+                    reject(err);
+                }
+                files && files.length ? resolve(files[0]) : reject();
             })
     });
 };

@@ -1,32 +1,37 @@
 #!/usr/bin/env node
 
-import 'core-js';
-import * as ora from 'ora';
-import * as commander from 'commander';
+import "core-js";
+import * as ora from "ora";
+import * as commander from "commander";
 import { prepareTestCases } from "./testCases";
-import { prepareSelectors } from "./selectors";
+import {
+    prepareSelectors,
+    removeTemporarySelectors,
+} from "./selectors";
 import { runTests } from "./testing";
 
 commander
-    .version('1.0.0')
-    .description('State checking tool');
+    .version("0.0.2")
+    .description("State checking tool");
 
 commander
-    .command('start')
-    .alias('s')
-    .description('Start testing')
+    .command("start")
+    .alias("s")
+    .description("Start testing")
     .action(async () => {
-        const spinnerTestCases = ora('Preparing test cases \n').start();
+        const spinnerTestCases = ora("Preparing test cases \n").start();
         const testCases = await prepareTestCases();
         spinnerTestCases.stop();
 
-        const spinnerConfiguration = ora('Preparing configuration files \n').start();
+        const spinnerConfiguration = ora("Preparing configuration files \n").start();
         const selectors = await prepareSelectors();
         spinnerConfiguration.stop();
 
         if (testCases && selectors) {
-            await runTests(testCases, selectors);
+            runTests(testCases, selectors);
         }
+
+        await removeTemporarySelectors();
     });
 
 if (!process.argv.slice(2).length) {
