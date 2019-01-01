@@ -3,6 +3,7 @@
 import "core-js";
 import * as ora from "ora";
 import * as commander from "commander";
+import chalk from "chalk";
 import { prepareTestCases } from "./testCases";
 import {
     prepareSelectors,
@@ -11,7 +12,7 @@ import {
 import { runTests } from "./testing";
 
 commander
-    .version("0.0.2")
+    .version("1.0.2")
     .description("State checking tool");
 
 commander
@@ -19,19 +20,24 @@ commander
     .alias("s")
     .description("Start testing")
     .action(async () => {
-        const spinnerTestCases = ora("Preparing test cases \n").start();
-        const testCases = await prepareTestCases();
-        spinnerTestCases.stop();
+        try {
+            const spinnerTestCases = ora("Preparing test cases \n").start();
+            const testCases = await prepareTestCases();
+            spinnerTestCases.stop();
 
-        const spinnerConfiguration = ora("Preparing configuration files \n").start();
-        const selectors = await prepareSelectors();
-        spinnerConfiguration.stop();
+            const spinnerConfiguration = ora("Preparing configuration files \n").start();
+            const selectors = await prepareSelectors();
+            spinnerConfiguration.stop();
 
-        if (testCases && selectors) {
-            runTests(testCases, selectors);
+            if (testCases && selectors) {
+                runTests(testCases, selectors);
+            }
+
+            await removeTemporarySelectors();
+        } catch (error) {
+            console.log(chalk.red(`Error: ${error}`));
         }
 
-        await removeTemporarySelectors();
     });
 
 if (!process.argv.slice(2).length) {

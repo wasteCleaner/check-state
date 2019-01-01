@@ -12,16 +12,16 @@ export const prepareSelectors = async (): Promise<Selectors | void> => {
         await buildTemporarySelectors(configurationFile);
         const compiledSelectors = await getCompiledSelectors();
         return require(compiledSelectors);
-    } catch (e) {
-        console.log(chalk.red(`Error: ${e}`));
+    } catch (errors) {
+        console.log(chalk.red(`Error: ${errors}`));
     }
 };
 
 const getConfigurationFiles = (): Promise<string> => {
     return new Promise<string>((resolve, reject) => {
         glob(
-            '**/checkState.config.js',
-            { ignore: 'node_modules/**/checkState.config.js', realpath: true },
+            "**/checkState.config.js",
+            { ignore: "node_modules/**/checkState.config.js", realpath: true },
             (err, files) => {
                 if (err) {
                     reject(err);
@@ -38,12 +38,12 @@ const buildTemporarySelectors = (configurationFile: string): Promise<void> => {
             context: path.resolve(__dirname),
             entry: configurationFile,
             output: {
-                path: configurationFile.replace('checkState.config.js', ''),
-                filename: 'tmp.checkState.config.js',
-                libraryTarget: 'umd',
-                library: 'lib',
+                path: configurationFile.replace("checkState.config.js", ""),
+                filename: "tmp.checkState.config.js",
+                libraryTarget: "umd",
+                library: "lib",
                 umdNamedDefine: true,
-                globalObject: 'this'
+                globalObject: "this",
             },
             resolve: {
                 extensions: [".ts", ".tsx", ".js", ".jsx"]
@@ -52,7 +52,7 @@ const buildTemporarySelectors = (configurationFile: string): Promise<void> => {
                 rules: [
                     {
                         test: /\.tsx?$/,
-                        loader: 'ts-loader'
+                        loader: "ts-loader",
                     },
                 ]
             },
@@ -81,8 +81,8 @@ const removeFile = (path: string) => {
 const getCompiledSelectors = (): Promise<string> => {
     return new Promise<string>((resolve, reject) => {
         glob(
-            '**/tmp.checkState.config.js',
-            { ignore: 'node_modules/**/tmp.checkState.config.js', realpath: true },
+            "**/tmp.checkState.config.js",
+            { ignore: "node_modules/**/tmp.checkState.config.js", realpath: true },
             (err, files) => {
                 if (err) {
                     reject(err);
