@@ -4,33 +4,32 @@ import * as fs from "fs";
 
 import { Tests } from "./types";
 
-export const prepareTestCases = async () => {
+export const prepareTestCases = async (): Promise<Tests | void> => {
     try {
-        const testFiles = await getTestCases();
-        if (testFiles.length === 0) {
-            console.log(chalk.red('Check state files not found'));
-        }
-
-        return Promise.all(testFiles.map((file) => readCase(file)))
-            .then(testsCases => testsCases.map(testCase => JSON.parse(testCase) as Tests));
+        const testFiles = await getTestFiles();
+        const testCases = await readCases(testFiles);
+        return JSON.parse(testCases);
     } catch (e) {
         console.log(chalk.red(`Error: ${e}`));
     }
 };
 
-const getTestCases = () => {
-    return new Promise<string[]>((resolve, reject) => {
+const getTestFiles = (): Promise<string> => {
+    return new Promise<string>((resolve, reject) => {
         glob(
             '**/*.checkState.json',
             { ignore: 'node_modules/**/*.checkState.json' },
             (err, files) => {
-                if (err) reject(err);
-                resolve(files);
+                if (err) {
+                    reject(err);
+                }
+
+                files && files.length ? resolve(files[0]) : reject();
             });
     });
 };
 
-const readCase = (testFile: string) => {
+const readCases = (testFile: string): Promise<string> => {
     console.log(chalk.green(`In progress: ${testFile}`));
     return new Promise<string>((resolve, reject) => {
         fs.readFile(testFile, 'utf8', (err, data) => {

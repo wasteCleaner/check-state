@@ -1,11 +1,11 @@
 export type Action = {
     type: string,
-    payload?: any,
+    payload?: undefined,
 };
 
-export type State = Object | any[] | any;
+export type State = Object | unknown;
 
-export type SelectorsResult = any[];
+export type SelectorsResult = { [index:string]: unknown };
 
 export type TestCase = {
     action: Action,
@@ -15,8 +15,4 @@ export type TestCase = {
 
 export type Tests = TestCase[];
 
-export type TestsSets = Tests[];
-
-export type Selectors =  { [index:string]: (state: State) => any };
-
-export type SelectorsGroup =  { [index:string]: Selectors };
+export type Selectors =  { [index:string]: (state: State) => unknown };
