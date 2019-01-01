@@ -1,7 +1,7 @@
 # Test redux state easily
 The CLI tool for testing selectors in your application.
 
-## Get starting
+## Installation
 To installing this package just run:
 
 `npm i check-state -g`
