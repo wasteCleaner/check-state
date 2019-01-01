@@ -11,6 +11,8 @@ For running test you need 2 configuration files:
 * checkState.config.js - in this file you need to export all your selectors. All selectors which exported there will be tested;
 * app.checkState.json - this file contain test cases and other helpful data. For preparing it you need our Chrome extension: https://chrome.google.com/webstore/detail/redux-checkstate-selector/lhhbnkkjefhgnlfjhjdbnijiikiofgbc
 
+> **Important!** You need to put configs to /src folder of your project.
+
 ### Example checkState.config.js
 ```$js
 import {

@@ -45,7 +45,7 @@ var testCases_1 = require("./testCases");
 var selectors_1 = require("./selectors");
 var testing_1 = require("./testing");
 commander
-    .version("0.0.2")
+    .version("1.0.3")
     .description("State checking tool");
 commander
     .command("start")

@@ -12,7 +12,7 @@ import {
 import { runTests } from "./testing";
 
 commander
-    .version("1.0.2")
+    .version("1.0.3")
     .description("State checking tool");
 
 commander
