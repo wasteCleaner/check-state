@@ -3,6 +3,18 @@
   "version": "1.0.4",
   "description": "The CLI tool for testing selectors in your application.",
   "main": "./dist/index.js",
+  "keywords": [
+    "redux",
+    "state",
+    "check",
+    "coverage",
+    "easy",
+    "runner",
+    "snapshot",
+    "test",
+    "testing",
+    "typescript"
+  ],
   "preferGlobal": true,
   "bin": "./dist/index.js",
   "scripts": {
@@ -27,8 +39,8 @@
     "lodash": "^4.17.11",
     "node-ts": "^2.1.2",
     "ora": "^3.0.0",
-    "ts-loader": "^5.3.1",
-    "typescript": "^3.2.1",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.2.4",
     "webpack": "^4.26.1"
   },
   "devDependencies": {

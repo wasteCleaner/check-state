@@ -46,13 +46,18 @@ const buildTemporarySelectors = (configurationFile: string): Promise<void> => {
                 globalObject: "this",
             },
             resolve: {
-                extensions: [".ts", ".tsx", ".js", ".jsx"]
+                extensions: [".ts", ".tsx", ".js", ".jsx"],
             },
             module: {
                 rules: [
                     {
                         test: /\.tsx?$/,
                         loader: "ts-loader",
+                        options: {
+                            compilerOptions: {
+                                noEmit: false,
+                            }
+                        }
                     },
                 ]
             },
